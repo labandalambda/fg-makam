@@ -1,0 +1,82 @@
+%use fg.
+%open syntax.
+
+program_ : syntax program.
+program_concr : syntax (concrete program).
+
+decl : syntax decl.
+
+%  Extra constructors
+cmethod_sig, cmethod_spec : type.
+cmethod_sig : list (tuple (concrete.name expr) string) -> string -> cmethod_sig.
+cmethod_spec : string -> cmethod_sig -> cmethod_spec.
+
+cmethod_decl : (concrete.name expr) -> string -> cmethod_spec -> expr -> decl.
+
+cmethod_spec : syntax cmethod_spec.
+method_spec : syntax method_spec.
+
+typed_var : syntax (tuple (concrete.name expr) string).
+
+exprvar : concrete.namespace expr.
+
+expr, baseexpr : syntax expr.
+
+type_lit : syntax type_lit.
+
+typed_field : syntax (tuple string string).
+
+`(syntax_rules <<
+  program_concr -> concrete { <program_> }
+
+  program_ ->
+    program    
+      { "package main;" <list_sep (token ";") decl> ";" "func main() { _ =" <expr> "}" }
+
+  decl -> 
+    type_decl  { "type" <makam.ident> <type_lit> }
+  / (fun self => cmethod_decl (concrete.name exprvar self))
+     { "func (" <makam.ident> <makam.ident> ")" <cmethod_spec> "{" "return" <expr> "}" }
+
+  method_spec ->
+    (fun name => fun types => fun return => method_spec name (method_sig types return))   
+      { <makam.ident> "(" <list_sep (token ",")  makam.ident> ")" <makam.ident> }
+  
+  cmethod_spec ->
+    (fun name => fun args => fun tipo => cmethod_spec name (cmethod_sig args tipo))
+       { <makam.ident> "(" <list_sep (token ",") typed_var> ")" <makam.ident> }
+
+  typed_var -> 
+    (fun x => fun y => (tuple (concrete.name exprvar x) y)) { <makam.ident> <makam.ident> }
+
+  expr ->
+    method_call { <baseexpr> "." <makam.ident> "(" <list_sep (token ",") expr> ")" }
+  / struct_lit  { <makam.ident> "{" <list_sep (token ";") baseexpr> "}" }
+  / select      { <baseexpr> "." <makam.ident> }
+  / type_ass    { <baseexpr> "." "(" <makam.ident> ")" }
+  / (fun x => x) { <baseexpr> }
+
+  baseexpr ->
+    (fun name => concrete.var (concrete.name exprvar name)) { <makam.ident> }
+  / { "(" <expr> ")" }
+
+  type_lit ->
+    struct    { "struct" "{" <list_sep (token ";") typed_field> "}" }
+  / interface { "interface" "{" <list_sep (token ";") method_spec> "}"}
+
+  typed_field ->
+    tuple { <makam.ident> <makam.ident> }
+>>).
+`( syntax.def_toplevel_js program_concr ).
+
+concrete.pick_namespace_userdef (_: expr) exprvar.
+
+
+concrete.resolve_conversion 
+  (cmethod_decl Self TySelf Spec Expr)
+  (method_decl TySelf Spec' (concrete.bindone Self (concrete.bindmany Largs Expr))) :-
+    eq Spec (cmethod_spec MethodName (cmethod_sig LAT RetTy)),
+    zip Largs Ltype LAT,
+    eq Spec' (method_spec MethodName (method_sig Ltype RetTy)).
+
+%  TODO(teofr): Take away not needed spaces
