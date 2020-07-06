@@ -1,0 +1,36 @@
+% https://arxiv.org/pdf/2005.11710.pdf
+
+% Fig 9
+% -----
+% FG syntax
+
+% field = string.
+% method = string.
+% variable ???
+% ts, ti, t = string.
+
+expr : type.
+
+method_sig : type.
+method_sig : list string -> string -> method_sig.
+
+method_spec : type.
+method_spec : string -> method_sig -> method_spec.
+
+type_lit : type.
+
+struct : list (tuple string string) -> type_lit.
+interface : list method_spec -> type_lit.
+
+decl : type.
+
+type_decl : string -> type_lit -> decl.
+method_decl : string -> method_spec -> (bindone expr (bindmany expr expr)) -> decl.
+
+program : type.
+program : list decl -> expr -> program.
+
+method_call : expr -> string -> list expr -> expr.
+struct_lit : string -> list expr -> expr.
+select : expr -> string -> expr.
+type_ass : expr -> string -> expr.
