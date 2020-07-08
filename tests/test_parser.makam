@@ -1,5 +1,13 @@
 %use "../parser".
 %open string.
 
-string.readfile "examples/example1.fgo" Example1 ?
-syntax.run program_concr Example1 Expr ?
+(
+    string.readfile "examples/example1.fgo" Example,
+    isocast Example (Expr : program)
+) ?
+
+
+(
+    string.readfile "examples/example2.fgo" Example,
+    isocast Example (Expr : program)
+) ?

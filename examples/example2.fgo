@@ -1,0 +1,5 @@
+package main;
+
+type any interface { } ;
+
+func main() { _ = _ }
