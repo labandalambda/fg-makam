@@ -1,4 +1,4 @@
-%use parser.
+%use "../parser".
 %open string.
 
 string.readfile "examples/example1.fgo" Example1 ?
