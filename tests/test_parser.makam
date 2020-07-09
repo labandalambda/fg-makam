@@ -1,13 +1,18 @@
 %use "../parser".
 %open string.
 
-(
-    string.readfile "examples/example1.fgo" Example,
-    isocast Example (Expr : program)
-) ?
+parse_test_suite : testsuite.
+%testsuite parse_test_suite.
+
+parse_file_with_expr : string -> program -> prop.
+parse_file_with_expr FileName Expr :-
+    string.readfile FileName FileContents,
+    isocast FileContents (Expr : program).
 
 
-(
-    string.readfile "examples/example2.fgo" Example,
-    isocast Example (Expr : program)
-) ?
+testcase parse_test_suite :- 
+    parse_file_with_expr "examples/example1.fgo" Expr.
+testcase parse_test_suite :- 
+    parse_file_with_expr "examples/example2.fgo" Expr.
+
+testcase parse_test_suite ?
