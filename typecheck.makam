@@ -1,0 +1,148 @@
+%use fg.
+%use aux.
+
+% Fig 11
+% Tipado
+
+typecheck : expr -> string -> prop.
+
+% subtipado
+
+sub : string -> string -> prop.
+included : list A -> list A -> prop.
+
+sub TS TS :-
+  is_struct_type TS.
+
+sub T TI :-
+  is_interface_type TI,
+  methods_i TI MI,
+  is_struct_type T,
+  methods_s T M,
+  included MI M.
+sub T TI :-
+  is_interface_type TI,
+  methods_i TI MI,
+  is_interface_type T,
+  methods_i T M,
+  included MI M.
+
+included [] B.
+included (HD :: TL) B :-
+  contains HD B,
+  included TL B.
+
+% T-Named
+ok : string -> prop.
+ok T :-
+  global_decl D,
+  contains (type_decl T _) D.
+
+% T-Specification
+ok : method_spec -> prop.
+ok (method_spec M (method_sig TA TR)) :-
+  % decir algo sobre las variables
+  map ok TA,
+  ok TR.
+
+% T-Struct
+ok : type_lit -> prop.
+ok (struct LF) :-
+  zip LFields LTypes LF,
+  unique LFields LFields',
+  eq LFields LFields',
+  map ok LTypes.
+
+% T-Interface
+ok (interface LM) :-
+  unique LM,
+  map ok LM.
+
+
+ok : decl -> prop.
+ok_func_aux : list string -> (bindmany expr expr) -> string -> prop.
+% T-Type
+ok (type_decl _ T) :- 
+  ok T.
+
+% T-Func
+%  TODO: hablemos del error este
+ok (method_decl TS (method_spec MN (method_sig TA TR)) F) :-
+  ok TS,
+  map ok TA,
+  ok TR,
+  (x : expr -> typecheck x TS -> ([Fx]
+    bindone.apply F x Fx,
+    ok_func_aux TA Fx TE
+  )),
+  sub TE TR.
+
+%  ok (method_decl TS (method_spec MN (method_sig TA TR)) F) :-
+%    ok TS,
+%    map ok TA,
+%    ok TR,
+%    (x : expr -> typecheck x TS -> (
+%      eq F (bind _ F'),
+%      eq Fx (F' x),
+%      %  bindone.apply F x Fx,
+%      ok_func_aux TA Fx TE
+%    )),
+%    sub TE TR.
+
+
+ok_func_aux [] F TE :-
+  bindmany.apply F [] Res,
+  typecheck Res TE.
+ok_func_aux (HD :: TL) F TE :-
+  (y : expr -> typecheck y HD -> ([Fy]
+    bindmany.applysome F [y] Fy,
+    ok_func_aux TL Fy TE
+  )).
+
+% T-Call
+typecheck (method_call Self Name Args) Ty :-
+  typecheck Self TS,
+  map typecheck Args TArgs,
+  methods TS MTS,
+  contains (method_spec Name (method_sig TArgs' Ty)) MTS,
+  map sub TArgs TArgs'.
+
+% T-Literal
+typecheck (struct_lit TS ES) TS :-
+  ok TS,
+  map typecheck ES TES,
+  fields TS LFT,
+  zip _ LT LFT,
+  map sub TES LT.
+
+% T-Field
+typecheck (select E F) Ty :-
+  typecheck E TE,
+  fields TE LFT,
+  find (pfun (G, X) => eq G F) LFT (F, Ty).
+
+% T-AssertI
+typecheck (type_ass E TI) TI :-
+  is_interface_type TI,
+  ok TI,
+  typecheck E _.
+
+% T-AssertS
+typecheck (type_ass E TS) TS :-
+  is_struct_type TS,
+  ok TS,
+  typecheck E UI,
+  is_interface_type UI,
+  sub TS UI.
+
+% T-Stupid
+typecheck (type_ass E T) T :-
+  ok T,
+  typecheck E US,
+  is_struct_type US.
+
+ok : program -> prop.
+
+ok (program D E) :-
+  % distinct decl D,
+  (global_decl D -> (map ok D, typecheck E _)).
