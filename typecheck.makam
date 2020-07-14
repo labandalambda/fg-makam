@@ -142,7 +142,11 @@ typecheck (type_ass E T) T :-
   is_struct_type US.
 
 ok : program -> prop.
+typecheck : program -> string -> prop.
 
-ok (program D E) :-
+typecheck (program D E) Ty :-
   % distinct decl D,
-  (global_decl D -> (map ok D, typecheck E _)).
+  (global_decl D -> (map ok D, typecheck E Ty)).
+
+ok P :-
+  typecheck P _.
