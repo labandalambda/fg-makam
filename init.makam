@@ -1,0 +1,12 @@
+%use fg.
+%use parser.
+%use typecheck.
+
+parse : string -> program -> prop.
+parse S P :-
+    isocast S P.
+
+parse_tc : string -> string -> prop.
+parse_tc E T :-
+    parse E P,
+    typecheck P T.

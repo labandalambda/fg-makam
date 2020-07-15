@@ -1,0 +1,84 @@
+%use fg.
+
+% Fig 10
+% ------
+% auxiliary functions
+
+global_decl : list decl -> prop.
+
+fields : string -> list (tuple string string) -> prop.
+
+fields TS L :-
+  global_decl D,
+  contains (type_decl TS (struct L)) D.
+
+body : string -> string -> (bindone expr (bindmany expr expr)) -> prop.
+
+body TS M F :-
+  global_decl D,
+  contains (method_decl TS (method_spec M _) F) D.
+
+type_aux : expr -> string -> prop.
+type_aux (struct_lit TS _) TS.
+
+unique : list method_spec -> prop.
+
+unique [].
+unique ((method_spec Name Sig) :: TL) :-
+  unique TL,
+  if (contains (method_spec Name Sig') TL)
+  then eq Sig Sig'
+  else success. 
+
+tdecls : list decl -> list string -> prop.
+tdecls_aux : decl -> string -> prop.
+
+tdecls D TS :-
+  map tdecls_aux D TS.
+
+tdecls_aux (type_decl S _) S.
+
+mdecls : list decl -> list (tuple string string) -> prop.
+mdecls_aux : decl -> (tuple string string) -> prop.
+
+mdecls D TS :-
+  map mdecls_aux D TS.
+
+mdecls_aux (method_decl S (method_spec S2 _) _) (S, S2).
+
+is_struct_type : string -> prop.
+is_struct_type T :-
+  global_decl D,
+  contains (type_decl T (struct _)) D.
+
+is_interface_type : string -> prop.
+is_interface_type T :-
+  global_decl D,
+  contains (type_decl T (interface _)) D.
+
+methods_s : string -> list method_spec -> prop.
+methods_aux : string -> decl -> prop.
+methods_aux2 : decl -> method_spec -> prop.
+
+methods_s TS MS :-
+  global_decl D,
+  filter (methods_aux TS) D D',
+  map (methods_aux2) D' MS.
+
+methods_aux TS (method_decl TS _ _).
+methods_aux2 (method_decl _ M _) M.
+
+methods_i : string -> list method_spec -> prop.
+methods_i TI MS :-
+  global_decl D,
+  contains (type_decl TI (interface MS)) D.
+
+methods : string -> list method_spec -> prop.
+
+methods TI MS :-
+  is_interface_type TI,
+  methods_i TI MS.
+
+methods TS MS :-
+  is_struct_type TS,
+  methods_s TS MS.

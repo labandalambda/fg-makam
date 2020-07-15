@@ -1,0 +1,46 @@
+%use "../init".
+%open string.
+
+typecheck_test_suite : testsuite.
+%testsuite typecheck_test_suite.
+
+testcase typecheck_test_suite :- 
+    parse_tc <<
+    package main;
+
+    type any interface { } ;
+
+    type unit struct { } ;
+
+    type bool interface {
+        not (bool) bool
+    } ;
+    type true struct { } ;
+    type false struct { } ;
+
+
+    func (self true) not ( ) false {
+        return false { }
+    } ;
+
+    func (self false) not ( ) true {
+        return true { }
+    } ;
+
+    type function interface {
+    apply (any) any
+    } ;
+
+    type compose struct {
+        f function ;
+        g function
+    } ;
+
+
+    func ( this compose ) apply (x any) any {
+    return ( this . g ) . apply ( ( this . f ) . apply ( x ) )
+    } ;
+
+    func main() { _ = (true { }) . not ( ) } 
+    >> "false".
+    
