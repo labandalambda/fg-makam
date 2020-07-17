@@ -1,5 +1,4 @@
 %use "../parser".
-%open string.
 
 parse_test_suite : testsuite.
 %testsuite parse_test_suite.
