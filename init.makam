@@ -1,12 +1,39 @@
 %use fg.
 %use parser.
 %use typecheck.
+%use evaluation.
 
 parse : string -> program -> prop.
 parse S P :-
     isocast S P.
 
+parse_file : string -> program -> prop.
+parse_file F P :-
+    string.readfile F S,
+    print S,
+    isocast S P.
+
+pp : program -> string -> prop.
+pp P S :-
+    isocast P S.
+
 parse_tc : string -> string -> prop.
 parse_tc E T :-
     parse E P,
     typecheck P T.
+
+parse_tc_file : string -> string -> prop.
+parse_tc_file E T :-
+    parse_file E P,
+    typecheck P T.
+
+parse_tc_eval : string -> expr -> prop.
+parse_tc_eval S V :-
+  parse S P,
+  typecheck P _,
+  eval P V.
+
+parse_tc_eval_file : string -> expr -> prop.
+parse_tc_eval_file FileName V :-
+    string.readfile FileName FileContents,
+    parse_tc_eval FileContents V.
