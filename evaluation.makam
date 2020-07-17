@@ -1,0 +1,38 @@
+%use fg.
+%use aux.
+%use typecheck.
+
+%  Asumo que esta typecheckeado
+eval : expr -> expr -> prop.
+eval : program -> expr -> prop.
+
+eval (program D E) V :-
+  % distinct decl D,
+  (global_decl D -> (eval E V)).
+
+eval (method_call Self Name Args) V :-
+  eval Self (struct_lit TS Fields),
+  map eval Args Vargs,
+  body TS Name F,
+  bindone.apply F (struct_lit TS Fields) F',
+  bindmany.apply F' Vargs Fapplied,
+  eval Fapplied V.
+
+eval (struct_lit TS Fields) (struct_lit TS VFields) :-
+  map eval Fields VFields.
+
+eval (select E FieldName) V :-
+  eval E (struct_lit TS Fields),
+  
+  fields TS FieldNamesTypes,
+  zip FieldNames _ FieldNamesTypes,
+  
+  list.index_of (eq FieldName) FieldNames Idx,
+  list.nth Fields Idx Field,
+  
+  eval Field V.
+
+eval (type_ass E TE) V :-
+  eval E V,
+  eq V (struct_lit TS _),
+  sub TS TE.
