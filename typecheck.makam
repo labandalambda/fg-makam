@@ -66,7 +66,6 @@ ok (type_decl _ T) :-
   ok T.
 
 % T-Func
-%  TODO: hablemos del error este
 ok (method_decl TS (method_spec MN (method_sig TA TR)) F) :-
   ok TS,
   map ok TA,
@@ -76,19 +75,6 @@ ok (method_decl TS (method_spec MN (method_sig TA TR)) F) :-
     ok_func_aux TA Fx TE
   )),
   sub TE TR.
-
-%  ok (method_decl TS (method_spec MN (method_sig TA TR)) F) :-
-%    ok TS,
-%    map ok TA,
-%    ok TR,
-%    (x : expr -> typecheck x TS -> (
-%      eq F (bind _ F'),
-%      eq Fx (F' x),
-%      %  bindone.apply F x Fx,
-%      ok_func_aux TA Fx TE
-%    )),
-%    sub TE TR.
-
 
 ok_func_aux [] F TE :-
   bindmany.apply F [] Res,
