@@ -1,0 +1,33 @@
+package main;
+
+type nat interface {
+    succ ( ) nat ;
+    prev ( ) nat ;
+    plus ( nat ) nat
+} ;
+
+type zero struct { } ;
+func ( self zero ) succ ( ) nat {
+    return succ { self }
+} ;
+func ( self zero ) prev ( ) nat {
+    return self
+} ;
+
+type succ struct { prev nat } ;
+func ( self succ ) succ ( ) nat {
+    return succ { self }
+} ;
+func ( self succ ) prev ( ) nat {
+    return self . prev
+} ;
+
+func (self zero) plus ( x nat ) nat {
+    return x
+} ;
+
+func (self succ) plus ( x nat ) nat {
+    return ( ( self . prev ( ) ) . plus ( x ) ) . succ ( ) 
+} ;
+
+func main() { _ = (( ( zero { } ) . succ ( ) ) . succ ( )) . plus ( ( ( zero { } ) . succ ( ) ) . succ ( ) ) }

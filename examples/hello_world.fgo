@@ -1,0 +1,9 @@
+package main;
+
+type world struct { } ;
+
+func ( self world ) hello ( ) world { 
+    return self . hello ( ) 
+} ;
+
+func main() { _ = ( world { } ) . hello ( ) }

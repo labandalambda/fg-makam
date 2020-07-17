@@ -1,0 +1,22 @@
+type nat interface {
+    succ() nat ;
+    prev() nat
+} ;
+
+type zero struct { } ;
+func (self zero) succ() {
+    return succ{self}
+} ;
+func (self zero) prev() {
+    return self
+} ;
+
+type succ struct { prev nat } ;
+func (self succ) succ() {
+    return succ{self}
+} ;
+func (self succ) prev() {
+    return self.prev
+} ;
+
+func main() { _ = zero.succ().succ() }
