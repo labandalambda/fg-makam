@@ -1,7 +1,7 @@
 %use fg.
 %use parser.
 %use typecheck.
-%use evaluation.
+%use evaluation2.
 
 parse : string -> program -> prop.
 parse S P :-
@@ -31,9 +31,12 @@ parse_tc_eval : string -> expr -> prop.
 parse_tc_eval S V :-
   parse S P,
   typecheck P _,
-  eval P V.
+  eval2 P V.
 
 parse_tc_eval_file : string -> expr -> prop.
 parse_tc_eval_file FileName V :-
     string.readfile FileName FileContents,
     parse_tc_eval FileContents V.
+
+
+parse_tc_eval_file "examples/nat.fgo" V ?
