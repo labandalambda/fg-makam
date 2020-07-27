@@ -26,38 +26,56 @@ type_lit : syntax type_lit.
 
 typed_field : syntax (tuple string string).
 
+main_expr : syntax expr.
+
+goident_, goident, ident_first, ident_rest : syntax string.
+syntax.rule ident_first (charclass "abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ").
+syntax.rule ident_rest (charclass "abcdefghijklmnopqrstuvwxyz_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ").
+syntax.rule goident_ (charcons ident_first (charmany ident_rest)).
+`(syntax.def_js goident (token goident_)).
+
 `(syntax_rules <<
   program_concr -> concrete { <program_> }
 
   program_ ->
-    program    
-      { "package main;" <list_sep (token ";") decl> ";" "func main() { _ =" <expr> "}" }
+    program
+      {
+        "package" "main" ";"
+        <list_sep (token "") decl>
+        "func" "main" "(" ")" "{"
+          <main_expr>
+        "}"
+      }
 
-  decl -> 
-    type_decl  { "type" <makam.ident> <type_lit> }
+  main_expr ->
+       { "_" "=" <expr> }
+    /  { "fmt" "." "Printf" "(" "\"%#v\"" "," <expr> ")" }
+
+  decl ->
+    type_decl  { "type" <goident> <type_lit> ";" }
   / (fun self => cmethod_decl (concrete.name exprvar self))
-     { "func (" <makam.ident> <makam.ident> ")" <cmethod_spec> "{" "return" <expr> "}" }
+     { "func" "(" <goident> <goident> ")" <cmethod_spec> "{" "return" <expr> "}" ";" }
 
   method_spec ->
-    (fun name => fun types => fun return => method_spec name (method_sig types return))   
-      { <makam.ident> "(" <list_sep (token ",")  makam.ident> ")" <makam.ident> }
-  
+    (fun name => fun types => fun return => method_spec name (method_sig types return))
+      { <goident> "(" <list_sep (token ",")  goident> ")" <goident> }
+
   cmethod_spec ->
     (fun name => fun args => fun tipo => cmethod_spec name (cmethod_sig args tipo))
-       { <makam.ident> "(" <list_sep (token ",") typed_var> ")" <makam.ident> }
+       { <goident> "(" <list_sep (token ",") typed_var> ")" <goident> }
 
-  typed_var -> 
-    (fun x => fun y => (tuple (concrete.name exprvar x) y)) { <makam.ident> <makam.ident> }
+  typed_var ->
+    (fun x => fun y => (tuple (concrete.name exprvar x) y)) { <goident> <goident> }
 
   expr ->
-    method_call { <baseexpr> "." <makam.ident> "(" <list_sep (token ",") expr> ")" }
-  / struct_lit  { <makam.ident> "{" <list_sep (token ";") baseexpr> "}" }
-  / select      { <baseexpr> "." <makam.ident> }
-  / type_ass    { <baseexpr> "." "(" <makam.ident> ")" }
+    method_call { <baseexpr> "." <goident> "(" <list_sep (token ",") expr> ")" }
+  / struct_lit  { <goident> "{" <list_sep (token ";") baseexpr> "}" }
+  / select      { <baseexpr> "." <goident> }
+  / type_ass    { <baseexpr> "." "(" <goident> ")" }
   / (fun x => x) { <baseexpr> }
 
   baseexpr ->
-    (fun name => concrete.var (concrete.name exprvar name)) { <makam.ident> }
+    (fun name => concrete.var (concrete.name exprvar name)) { <goident> }
   / { "(" <expr> ")" }
 
   type_lit ->
@@ -65,14 +83,14 @@ typed_field : syntax (tuple string string).
   / interface { "interface" "{" <list_sep (token ";") method_spec> "}"}
 
   typed_field ->
-    tuple { <makam.ident> <makam.ident> }
+    tuple { <goident> <goident> }
 >>).
-`( syntax.def_toplevel_js program_concr ).
+`(syntax.def_toplevel_js program_concr).
 
 concrete.pick_namespace_userdef (_: expr) exprvar.
 
 
-concrete.resolve_conversion 
+concrete.resolve_conversion
   (cmethod_decl Self TySelf Spec Expr)
   (method_decl TySelf Spec' (concrete.bindone Self (concrete.bindmany Largs Expr))) :-
     eq Spec (cmethod_spec MethodName (cmethod_sig LAT RetTy)),
