@@ -32,8 +32,7 @@ goident_, goident, ident_first, ident_rest : syntax string.
 syntax.rule ident_first (charclass "abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ").
 syntax.rule ident_rest (charclass "abcdefghijklmnopqrstuvwxyz_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ").
 syntax.rule goident_ (charcons ident_first (charmany ident_rest)).
-`( syntax.def_js goident (token goident_) ).
-
+`(syntax.def_js goident (token goident_)).
 
 `(syntax_rules <<
   program_concr -> concrete { <program_> }
@@ -85,9 +84,8 @@ syntax.rule goident_ (charcons ident_first (charmany ident_rest)).
 
   typed_field ->
     tuple { <goident> <goident> }
-
 >>).
-`( syntax.def_toplevel_js program_concr ).
+`(syntax.def_toplevel_js program_concr).
 
 concrete.pick_namespace_userdef (_: expr) exprvar.
 
