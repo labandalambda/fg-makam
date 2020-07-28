@@ -90,7 +90,8 @@ syntax.rule goident_ (charcons ident_first (charmany ident_rest)).
       { <goident> "(" <list_sep (token ",") ignore_arg_name_typed_var> ")" <goident> }
 
   ignore_arg_name_typed_var ->
-    (fun name => fun type_name => type_name) { <goident> <goident> }
+    { "_" <goident> }
+  / (fun name => fun type_name => type_name) { <goident> <goident> }
 
   typed_field ->
     tuple { <goident> <goident> }
