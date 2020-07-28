@@ -5,7 +5,7 @@ type any interface { } ;
 type unit struct { } ;
 
 type bool interface {
-    not (bool) bool
+    not () bool
 } ;
 type true struct { } ;
 type false struct { } ;
@@ -20,7 +20,7 @@ func (self false) not ( ) true {
 } ;
 
 type function interface {
-  apply (any) any
+  apply (that any) any
 } ;
 
 type compose struct {
