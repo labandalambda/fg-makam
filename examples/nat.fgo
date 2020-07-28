@@ -3,7 +3,7 @@ package main;
 type nat interface {
     succ ( ) nat ;
     prev ( ) nat ;
-    plus ( nat ) nat
+    plus (other nat) nat
 } ;
 
 type zero struct { } ;

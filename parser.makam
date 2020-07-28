@@ -16,6 +16,9 @@ cmethod_decl : (concrete.name expr) -> string -> cmethod_spec -> expr -> decl.
 cmethod_spec : syntax cmethod_spec.
 method_spec : syntax method_spec.
 
+ignore_arg_names_method_spec : syntax method_spec.
+ignore_arg_name_typed_var : syntax string.
+
 typed_var : syntax (tuple (concrete.name expr) string).
 
 exprvar : concrete.namespace expr.
@@ -80,7 +83,15 @@ syntax.rule goident_ (charcons ident_first (charmany ident_rest)).
 
   type_lit ->
     struct    { "struct" "{" <list_sep (token ";") typed_field> "}" }
-  / interface { "interface" "{" <list_sep (token ";") method_spec> "}"}
+  / interface { "interface" "{" <list_sep (token ";") ignore_arg_names_method_spec> "}"}
+
+  ignore_arg_names_method_spec ->
+    (fun name => fun types => fun return => method_spec name (method_sig types return))
+      { <goident> "(" <list_sep (token ",") ignore_arg_name_typed_var> ")" <goident> }
+
+  ignore_arg_name_typed_var ->
+    { "_" <goident> }
+  / (fun name => fun type_name => type_name) { <goident> <goident> }
 
   typed_field ->
     tuple { <goident> <goident> }
