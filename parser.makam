@@ -72,7 +72,7 @@ syntax.rule goident_ (charcons ident_first (charmany ident_rest)).
 
   expr ->
     method_call { <baseexpr> "." <goident> "(" <list_sep (token ",") expr> ")" }
-  / struct_lit  { <goident> "{" <list_sep (token ";") baseexpr> "}" }
+  / struct_lit  { <goident> "{" <list_sep (token ",") expr> "}" }
   / select      { <baseexpr> "." <goident> }
   / type_ass    { <baseexpr> "." "(" <goident> ")" }
   / (fun x => x) { <baseexpr> }
