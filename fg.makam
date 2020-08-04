@@ -24,11 +24,14 @@ interface : list method_spec -> type_lit.
 
 decl : type.
 
+import_stmt : type.
+import_stmt : string -> import_stmt.
+
 type_decl : string -> type_lit -> decl.
 method_decl : string -> method_spec -> (bindone expr (bindmany expr expr)) -> decl.
 
 program : type.
-program : list decl -> expr -> program.
+program : list import_stmt -> list decl -> expr -> program.
 
 method_call : expr -> string -> list expr -> expr.
 struct_lit : string -> list expr -> expr.

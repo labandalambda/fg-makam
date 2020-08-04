@@ -31,6 +31,8 @@ typed_field : syntax (tuple string string).
 
 main_expr : syntax expr.
 
+import_stmt_ : syntax import_stmt.
+
 goident_, goident, ident_first, ident_rest : syntax string.
 syntax.rule ident_first (charclass "abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ").
 syntax.rule ident_rest (charclass "abcdefghijklmnopqrstuvwxyz_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ").
@@ -44,11 +46,15 @@ syntax.rule goident_ (charcons ident_first (charmany ident_rest)).
     program
       {
         "package" "main" ";"
+        <list_sep (token "") import_stmt_>
         <list_sep (token "") decl>
         "func" "main" "(" ")" "{"
           <main_expr>
         "}"
       }
+
+  import_stmt_ ->
+    import_stmt { "import" <makam.string_literal> ";" }
 
   main_expr ->
        { "_" "=" <expr> }
