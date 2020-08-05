@@ -6,7 +6,7 @@
 eval : expr -> expr -> prop.
 eval : program -> expr -> prop.
 
-eval (program D E) V :-
+eval (program I D E) V :-
   % distinct decl D,
   (global_decl D -> (eval E V)).
 

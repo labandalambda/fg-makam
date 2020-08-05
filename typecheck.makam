@@ -130,7 +130,7 @@ typecheck (type_ass E T) T :-
 ok : program -> prop.
 typecheck : program -> string -> prop.
 
-typecheck (program D E) Ty :-
+typecheck (program I D E) Ty :-
   % distinct decl D,
   (global_decl D -> (map ok D, typecheck E Ty)).
 

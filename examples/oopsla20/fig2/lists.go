@@ -1,5 +1,7 @@
 package main;
 
+import "fmt";
+
 type Bool interface {
 	Not() Bool;
 	Equal(that Any) Bool;
