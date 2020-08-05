@@ -10,7 +10,7 @@ Makam is a metalanguage that eases implementation of languages, aimed at allowin
 ## Idea
 Implement the "Featherweight Go" calculus presented in section 3 of Griesemer et al.[[2]](#2)
 
-The implementation was made as simple as possible. For that purpose, the code is very close to the actual mathematical calculus presented in the paper.[[1]](#1)
+The implementation was made as simple as possible. For that purpose, the code is very close to the actual mathematical calculus presented in the paper.[[2]](#2)
 
 The differences between the code and the calculus arise only when those changes simplify the implementation details.
 
@@ -18,7 +18,7 @@ The differences between the code and the calculus arise only when those changes 
 
  * Learn Makam
  * Show how easy it is to prototype a programming language with Makam
- * Have a better understanding of "Featherweight Go"[[1]](#1)
+ * Have a better understanding of "Featherweight Go"[[2]](#2)
  * Compare this implementation to [the paper's accompanying implementation](https://github.com/rhu1/fgg)
 
 ## Future work
