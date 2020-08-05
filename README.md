@@ -1,17 +1,29 @@
 # fg-makam
-Implementación con fines educativos de Featherweight Go en makam.
+Featherweight Go implementation in Makam. 
+
+This is implementation is only educational and was used to learn Makam in the process. 
+Featherweight Go is a minimalist version of Go defined by Griesmer et al. in their paper.[[1]](#1)
 
 ## Idea
+Implement the "Featherweight Go" calculus presented in section 3 of Griesmer et al.[[1]](#1)
 
-Implementar en makam el cálculo Featherweight Go presentado en la sección 3 de [Griesemer et al.](https://arxiv.org/pdf/2005.11710.pdf).
+The implementation was made as simple as possible. For that purpose, the code is very close to the actual mathematical calculus presented in the paper.[[1]](#1)
 
-## Objetivos
+The differences between the code and the calculus arise only when those changes simplify the implementation details.
 
- * Enseñar/Aprender makam
- * Entender un poco mejor el paper mencionado
- * Compararlo con la [implementación que acompaña al paper](https://github.com/rhu1/fgg)
+## Goals
 
-## Trabajo Futuro
+ * Learn Makam
+ * Show how easy it is to prototype a programming language with Makam
+ * Have a better understanding of "Featherweight Go".[[1]](#1)
+ * Compare this implementation to [the paper's accompanying implementation](https://github.com/rhu1/fgg)
 
- * Implementar FGG (Featherweight Generic Go)
- * Mejorar el parser
+## Future work
+
+ * Implement FGG (Featherweight Generic Go)
+ * Improve parsing
+
+# References
+
+<a id="1">[1]</a>
+[Featherweight Go](https://arxiv.org/pdf/2005.11710.pdf)
