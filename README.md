@@ -2,7 +2,7 @@
 Featherweight Go implementation in Makam. 
 
 This is implementation is only educational and was used to learn Makam in the process. 
-Featherweight Go is a minimalistic version of Go defined by Griesmer et al. in their paper.[[1]](#1)
+Featherweight Go is a minimalist version of Go defined by Griesmer et al. in their paper.[[1]](#1)
 
 ## Idea
 Implement the "Featherweight Go" calculus presented in section 3 of Griesmer et al.[[1]](#1)
