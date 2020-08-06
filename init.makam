@@ -2,16 +2,18 @@
 %use parser.
 %use typecheck.
 %use evaluation.
+%use preparser.
 
 parse : string -> program -> prop.
 parse S P :-
-    isocast S P.
+    uncomment S S',
+    print S',
+    isocast S' P.
 
 parse_file : string -> program -> prop.
 parse_file F P :-
     string.readfile F S,
-    print S,
-    isocast S P.
+    parse S P.
 
 pp : program -> string -> prop.
 pp P S :-
