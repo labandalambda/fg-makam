@@ -1,4 +1,5 @@
 %use "../parser".
+%use "../preparser".
 
 parse_test_suite : testsuite.
 %testsuite parse_test_suite.
@@ -6,10 +7,13 @@ parse_test_suite : testsuite.
 parse_file_with_expr : string -> program -> prop.
 parse_file_with_expr FileName Expr :-
     string.readfile FileName FileContents,
-    isocast FileContents (Expr : program).
+    uncomment FileContents FileContents',
+    isocast FileContents' (Expr : program).
 
 
 testcase parse_test_suite :- 
     parse_file_with_expr "examples/example1.fgo" Expr.
 testcase parse_test_suite :- 
     parse_file_with_expr "examples/example2.fgo" Expr.
+testcase parse_test_suite :-
+    parse_file_with_expr "examples/hello.fgo" Expr.
