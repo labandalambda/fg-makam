@@ -7,7 +7,6 @@
 parse : string -> program -> prop.
 parse S P :-
     uncomment S S',
-    print S',
     isocast S' P.
 
 parse_file : string -> program -> prop.
@@ -29,13 +28,14 @@ parse_tc_file E T :-
     parse_file E P,
     typecheck P T.
 
-parse_tc_eval : string -> expr -> prop.
-parse_tc_eval S V :-
+parse_tc_eval : string -> string -> expr -> prop.
+parse_tc_eval S Ty V :-
   parse S P,
-  typecheck P _,
+  typecheck P Ty,
   eval P V.
 
-parse_tc_eval_file : string -> expr -> prop.
-parse_tc_eval_file FileName V :-
+parse_tc_eval_file : string -> string -> expr -> prop.
+parse_tc_eval_file FileName Ty V :-
     string.readfile FileName FileContents,
-    parse_tc_eval FileContents V.
+    parse_tc_eval FileContents Ty V.
+
