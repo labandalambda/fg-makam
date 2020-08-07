@@ -6,6 +6,16 @@ program_concr : syntax (concrete program).
 
 decl : syntax decl.
 
+action : type.
+
+select_action : string -> action.
+type_ass_action : string -> action.
+method_call_action : string -> list expr -> action.
+
+expr_action : expr -> list action -> expr.
+
+action : syntax action.
+
 %  Extra constructors
 cmethod_sig, cmethod_spec : type.
 cmethod_sig : list (tuple (concrete.name expr) string) -> string -> cmethod_sig.
@@ -35,7 +45,7 @@ import_stmt_ : syntax import_stmt.
 
 goident_, goident, ident_first, ident_rest : syntax string.
 syntax.rule ident_first (charclass "abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ").
-syntax.rule ident_rest (charclass "abcdefghijklmnopqrstuvwxyz_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ").
+syntax.rule ident_rest (charclass "abcdefghijklmnopqrstuvwxyz_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>ᐨᐸᐳα").
 syntax.rule goident_ (charcons ident_first (charmany ident_rest)).
 `(syntax.def_js goident (token goident_)).
 
@@ -77,14 +87,18 @@ syntax.rule goident_ (charcons ident_first (charmany ident_rest)).
     (fun x => fun y => (tuple (concrete.name exprvar x) y)) { <goident> <goident> }
 
   expr ->
-    method_call { <baseexpr> "." <goident> "(" <list_sep (token ",") expr> ")" }
-  / struct_lit  { <goident> "{" <list_sep (token ",") expr> "}" }
-  / select      { <baseexpr> "." <goident> }
-  / type_ass    { <baseexpr> "." "(" <goident> ")" }
+    expr_action { <baseexpr> "." <list_sep_plus (token ".") action > }
   / (fun x => x) { <baseexpr> }
 
+  action ->
+    type_ass_action    { "(" <goident> ")" }
+  / method_call_action { <goident> "(" <list_sep (token ",") expr > ")" }
+  / select_action      { <goident> }
+ 
+
   baseexpr ->
-    (fun name => concrete.var (concrete.name exprvar name)) { <goident> }
+    struct_lit  { <goident> "{" <list_sep (token ",") expr> "}" }
+  / (fun name => concrete.var (concrete.name exprvar name)) { <goident> }
   / { "(" <expr> ")" }
 
   type_lit ->
@@ -114,4 +128,18 @@ concrete.resolve_conversion
     zip Largs Ltype LAT,
     eq Spec' (method_spec MethodName (method_sig Ltype RetTy)).
 
-%  TODO(teofr): Take away not needed spaces
+
+apply_actions : expr -> list action -> expr -> prop.
+
+concrete.resolve_conversion
+  (expr_action Expr As)
+  E' :-
+    apply_actions Expr As E'.
+
+apply_actions E [] E.
+apply_actions E ( (select_action Field) :: TL) E' :-
+  apply_actions (select E Field) TL E'.
+apply_actions E ( (method_call_action Name Args) :: TL) E' :-
+  apply_actions (method_call E Name Args) TL E'.
+apply_actions E ( (type_ass_action Ty) :: TL) E' :-
+  apply_actions (type_ass E Ty) TL E'.

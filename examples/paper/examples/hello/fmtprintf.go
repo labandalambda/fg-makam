@@ -1,4 +1,4 @@
-//$ go run github.com/rhu1/fgg -v -eval=10 fg/examples/hello/hello.go
+//$ go run github.com/rhu1/fgg -v -eval=10 fg/examples/hello/fmtprintf.go
 // Cf.
 //$ go run github.com/rhu1/fgg/fg/examples/hello
 
@@ -7,17 +7,9 @@
 // So the ';' are mandatory -- cannot replace by newlines (as in actual Go).
 // (Newlines and other whitespace may be freely added, though.)
 package main;
-//import "fmt";
+import "fmt";
 type World struct{};
 func (x0 World) hello() World { return x0.hello() };
-func main() {  // Some simple method
-	_ = (World{}).hello()
-	
-	/* - There seems to be some garbage here
-	   - How come? This aint no bin
-	   - Better still, it's a block comment
-	   - :|
-	*/
-
-	//fmt.Printf("%#v", World{}.hello())
+func main() {
+	fmt.Printf("%#v", World{}.hello())
 }
