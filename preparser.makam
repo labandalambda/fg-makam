@@ -1,21 +1,35 @@
-uncomment, uncomment_ : string -> string -> prop.
+uncomment, uncomment_line, uncomment_block : string -> string -> prop.
 
 uncomment "" "".
 uncomment S S' :-
   string.starts_with S "//" Rest,
-  uncomment_ Rest S'.
+  uncomment_line Rest S'.
+uncomment S S' :-
+  string.starts_with S "/*" Rest,
+  uncomment_block Rest S'.
 uncomment S S' :-
   not (string.starts_with S "//" _),
+  not (string.starts_with S "/*" _),
   string.headtail S HD TL,
   uncomment TL TL',
   string.headtail S' HD TL'.
 
-uncomment_ "" "".
-uncomment_ S S' :-
+uncomment_line "" "".
+uncomment_line S S' :-
   string.starts_with S "\n" Rest,
-  uncomment Rest S'.
-uncomment_ S S' :-
+  uncomment Rest S'',
+  string.headtail S' "\n" S''.
+uncomment_line S S' :-
   not (string.starts_with S "\n" _),
   string.headtail S _ TL,
-  uncomment_ TL S'.
+  uncomment_line TL S'.
+  
+uncomment_block "" "".
+uncomment_block S S' :-
+  string.starts_with S "*/" Rest,
+  uncomment Rest S'.
+uncomment_block S S' :-
+  not (string.starts_with S "*/" _),
+  string.headtail S _ TL,
+  uncomment_block TL S'.
   
