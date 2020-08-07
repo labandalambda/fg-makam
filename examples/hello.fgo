@@ -12,5 +12,12 @@ type World struct{};
 func (x0 World) hello() World { return x0.hello() };
 func main() {  // Some simple method
 	_ = (World{}).hello()
+	
+	/* - There seems to be some garbage here
+	   - How come? This aint no bin
+	   - Better still, it's a block comment
+	   - :|
+	*/
+
 	//fmt.Printf("%#v", World{}.hello())
 }
