@@ -45,7 +45,7 @@ import_stmt_ : syntax import_stmt.
 
 goident_, goident, ident_first, ident_rest : syntax string.
 syntax.rule ident_first (charclass "abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ").
-syntax.rule ident_rest (charclass "abcdefghijklmnopqrstuvwxyz_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ").
+syntax.rule ident_rest (charclass "abcdefghijklmnopqrstuvwxyz_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>ᐨᐸᐳα").
 syntax.rule goident_ (charcons ident_first (charmany ident_rest)).
 `(syntax.def_js goident (token goident_)).
 
