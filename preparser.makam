@@ -32,4 +32,3 @@ uncomment_block S S' :-
   not (string.starts_with S "*/" _),
   string.headtail S _ TL,
   uncomment_block TL S'.
-  
