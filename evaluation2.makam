@@ -1,0 +1,103 @@
+%use fg.
+%use aux.
+%use typecheck.
+
+%  Asumo que esta typecheckeado
+eval2 : expr -> expr -> prop.
+eval2 : program -> expr -> prop.
+
+eval2 (program D E) V :-
+  % distinct decl D,
+  (global_decl D -> (eval2 E V)).
+
+is_value : expr -> prop.
+
+is_value (struct_lit _ FS) :-
+    map is_value FS.
+
+%  A small step evaluator
+step : [A] A -> A -> prop.
+
+step (method_call Self Name Args) V :-
+  is_value Self,
+  map is_value Args,
+  eq Self (struct_lit TS _),
+  body TS Name F,
+  bindone.apply F Self F',
+  bindmany.apply F' Args V.
+
+step (select E FieldName) V :-
+  is_value E,
+  eq E (struct_lit TS VFields),
+  fields TS FieldNamesTypes,
+  zip FieldNames _ FieldNamesTypes,
+  list.index_of (eq FieldName) FieldNames Idx,
+  list.nth VFields Idx V.
+
+step (type_ass E TE) E :-
+  is_value E,
+  eq V (struct_lit TS _),
+  sub TS TE.
+
+find_hole : expr -> (expr -> expr) -> expr -> prop.
+find_first_hole : (list expr) -> (list expr) -> (expr -> expr) -> expr -> (list expr) -> prop.
+
+find_hole E (fun x => x) E :-
+    step E _.
+
+find_hole (method_call Self Name Args) (fun x => method_call (F x) Name Args) S' :-
+  find_hole Self F S'.
+
+concat2 : (list (list A)) -> list A -> prop.
+concat2 [] [].
+
+concat2 ([] :: TL) V :-
+  concat2 TL V.
+concat2 ((HD :: TL) :: TL') (HD :: V) :-
+  concat2 (TL :: TL') V.
+
+find_hole (method_call Self Name Args') (fun x => method_call Self Name (FArgs x)) E :-
+print "fh1.0",
+  is_value Self,
+print "fh1.1",
+  find_first_hole Args' VArgs H E Args,
+print "fh1.2", print VArgs, print H, print E, print Args, 
+  (x: expr -> ([Argsx]
+print "fh1.3", print (H x), print ([VArgs, [H x], Args]),
+    concat2 ([VArgs, [H x], Args]) Argsx,
+print "fh1.4",
+    eq Argsx (FArgs x))). 
+
+find_hole (struct_lit TS Fields) (fun x => struct_lit TS (FArgs x)) E:-
+  find_first_hole Fields VFields H E Fields,
+  (x : expr -> (
+      concat [VFields, [H x], Fields] Argsx,
+      eq Argsx (FArgs x)
+  )).
+
+find_hole (select E Name) (fun x => select (H x) Name) E' :-
+  find_hole E H E'.
+
+find_hole (type_ass E TE) (fun x => type_ass (H x) TE) E' :-
+  find_hole E H E'.
+
+find_first_hole (HD :: TL) [] H E TL :-
+  find_hole HD H E.
+find_first_hole (HD :: TL) (HD :: VS) H E TL' :-
+  is_value HD,
+  find_first_hole TL VS H E TL'.
+
+eval2 E V :-
+print "ev1.0",
+print E,
+  find_hole E H E',
+print "ev1.1",
+print E',
+  step E' V',
+print "ev1.2",
+print V',
+  eval2 (H V') V.
+
+eval2 E E :-
+  is_value E.
+  
