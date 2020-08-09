@@ -11,7 +11,7 @@ package main;
 type World struct{};
 func (x0 World) hello() World { return x0.hello() };
 func main() {  // Some simple method
-	_ = (World{}).hello()
+	_ = (World{}).hello() //A comment
 	
 	/* - There seems to be some garbage here
 	   - How come? This aint no bin
