@@ -13,6 +13,8 @@ expr: type.
 
 method_call : expr -> string -> list expr -> expr.
 struct_lit : string -> list expr -> expr.
+select : expr -> string -> expr.
+type_ass : expr -> string -> expr.
 ```
 
 Which means, ```expr``` is a type, and both ```method_call``` and ```struct_lit``` are constructors for the type.
