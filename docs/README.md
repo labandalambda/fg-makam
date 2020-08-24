@@ -19,7 +19,7 @@ type_ass : expr -> string -> expr.
 
 Which means, ```expr``` is a type, and both ```method_call``` and ```struct_lit``` are constructors for the type.
 
-The representation we use is based on the FG calculus, whose syntax is presented in figure 9, Griesemer et al (insert ref).
+The representation we use is based on the FG calculus, whose syntax is presented in figure 9, Griesemer et al. (insert ref).
 
 If you took a good look at the previous code paragraph, you might have noticed something unexpected. ```struct_lit``` takes a string and a list of expressions in order to construct a new expression. Why is that? In the FG calculus it says that struct literals are composed of a "structure type name" and a list of expressions. What happened to that "structure type name" and what is the string doing there?
 
@@ -35,7 +35,7 @@ Sadly Makam does not have type synonyms, [for now](https://github.com/astampouli
 % ts, ti, t = string.
 ```
 
-As we did with expressions, we can define more language constructs by just translating (almost literally) from the FG calculus. 
+As we did with expressions, we can define more language constructs by just translating (almost literally) from the FG calculus.
 
 ```
 method_sig : type.
@@ -52,9 +52,9 @@ interface : list method_spec -> type_lit.
 
 A ```method_sig``` is constructed by passing a list of types (`list string`) and a type (`string`) to its appropriate constructor. We will not be using the method's argument names, we will only be using their types, so to simplify we do not include them in our representation.
 
-A ```method_spec``` is constructed by using a method's name (like "add" or "sort") and it's signature. 
+A ```method_spec``` is constructed by using a method's name (like "add" or "sort") and it's signature.
 
-Using these ideas, most of the the translatation from the calculus to the representation we use is straightforward. 
+Using these ideas, most of the the translation from the calculus to the representation we use is straightforward.
 
 However, one constructor stands out. The ```method_decl``` constructor has this Makam signature:
 
