@@ -82,3 +82,10 @@ methods TI MS :-
 methods TS MS :-
   is_struct_type TS,
   methods_s TS MS.
+
+included : list A -> list A -> prop.
+
+included [] B.
+included (HD :: TL) B :-
+  contains HD B,
+  included TL B.

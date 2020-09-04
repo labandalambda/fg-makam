@@ -2,14 +2,13 @@
 %use aux.
 
 % Fig 11
-% Tipado
+% Typing
 
 typecheck : expr -> string -> prop.
 
-% subtipado
+% subtyping
 
 sub : string -> string -> prop.
-included : list A -> list A -> prop.
 
 sub TS TS :-
   is_struct_type TS.
@@ -26,11 +25,6 @@ sub T TI :-
   is_interface_type T,
   methods_i T M,
   included MI M.
-
-included [] B.
-included (HD :: TL) B :-
-  contains HD B,
-  included TL B.
 
 % T-Named
 ok : string -> prop.
