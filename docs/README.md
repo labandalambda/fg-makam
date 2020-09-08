@@ -81,11 +81,11 @@ Finally, the predicate *(Γ ⊢ e : t)* is reflected by the Makam predicate ```t
 typecheck : expr -> string -> prop.
 ```
 
-Meaning ```typecheck``` is a predicate which relates expressions to strings (indicating types). Where is the context *Γ* (Gamma) ?
+Thus, ```typecheck``` is a predicate which relates expressions to strings (indicating types). But where is the context *Γ* (Gamma) ?
 
 <!-- TODO -->
 (explanation missing)
 
-Also, notice that we don't need a translation for the *T-Var* rule. This is because we have no representation of the context. Instead we just use Makam's machinery to check for a variable's type and if it is in scope.
+Also, notice that we don't need a translation for the *T-Var* rule. This is because we have no representation of the context. Instead we just use Makam's machinery to check for a variable's type if it is in scope.
 
 # evaluation.makam
