@@ -63,3 +63,29 @@ method_decl : string -> method_spec -> (bindone expr (bindmany expr expr)) -> de
 ```
 
 The ```bindone``` and ```bindmany``` look strange at first. In order to construct a ```method_decl```, its constructor needs... (to be continued)
+
+# typecheck.makam
+
+The relationship *<:* is represented by the ```sub``` predicate, meaning subtyping.
+The translation between the rules for *<:* in the calculus to the rules for ```sub``` is pretty straightforward.
+
+The *ok* predicate of the calculus is reflected by the ```ok``` predicate in Makam.
+The translation necessary for this predicate is also pretty straightforward, except for the rule *T-Func*.
+
+<!-- TODO -->
+(explanation missing)
+
+Finally, the predicate *(Γ ⊢ e : t)* is reflected by the Makam predicate ```typecheck```. The main difference being that typecheck has the following signature:
+
+```
+typecheck : expr -> string -> prop.
+```
+
+Thus, ```typecheck``` is a predicate which relates expressions to strings (indicating types). But where is the context *Γ* (Gamma) ?
+
+<!-- TODO -->
+(explanation missing)
+
+Also, notice that we don't need a translation for the *T-Var* rule. This is because we have no representation for contexts and variables. Instead we just use Makam's machinery to check for a variable's type if it is in scope.
+
+# evaluation.makam
